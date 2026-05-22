@@ -1,0 +1,402 @@
+[
+  {
+    "id": "3bbbe7e4-991b-4062-a430-8900a7f5b9c6",
+    "merchant": "iCloud Storage",
+    "amount": 3.78,
+    "category": "Data",
+    "date": "2026-05-03",
+    "notes": "Quick lunch"
+  },
+  {
+    "id": "3f7cd3ca-a530-4b17-96cb-626e041a80b5",
+    "merchant": "Uber Ride",
+    "amount": 43.78,
+    "category": "Transport",
+    "date": "2026-05-19",
+    "notes": "Refill"
+  },
+  {
+    "id": "0bda931d-1415-4ce8-a96d-17aa97e2de72",
+    "merchant": "Domain Renewal",
+    "amount": 24.18,
+    "category": "Data",
+    "date": "2026-04-28",
+    "notes": ""
+  },
+  {
+    "id": "414250e1-84ef-4c98-83fe-e4bcbd5e57ed",
+    "merchant": "Target",
+    "amount": 17.64,
+    "category": "Other",
+    "date": "2026-04-27",
+    "notes": ""
+  },
+  {
+    "id": "71044d51-0312-4ed1-84ef-11be8e425918",
+    "merchant": "Subway",
+    "amount": 5.27,
+    "category": "Food",
+    "date": "2026-05-15",
+    "notes": "Monthly sub"
+  },
+  {
+    "id": "59c68c11-faa4-4929-bda2-05c78ff92c33",
+    "merchant": "Chipotle",
+    "amount": 27.85,
+    "category": "Food",
+    "date": "2026-05-12",
+    "notes": ""
+  },
+  {
+    "id": "e67cfce8-505f-46fe-bb5b-fb095e612a09",
+    "merchant": "Juice Bar",
+    "amount": 22.52,
+    "category": "Food",
+    "date": "2026-05-18",
+    "notes": ""
+  },
+  {
+    "id": "19b33199-eab1-47b2-b7aa-3e04295364b1",
+    "merchant": "Escape Room",
+    "amount": 8.21,
+    "category": "Fun",
+    "date": "2026-05-21",
+    "notes": ""
+  },
+  {
+    "id": "100d2c66-a383-4a31-987e-0e1776a1ef9a",
+    "merchant": "Pizza Hut",
+    "amount": 30.25,
+    "category": "Food",
+    "date": "2026-05-05",
+    "notes": "Refill"
+  },
+  {
+    "id": "8d07d29a-43ab-4159-b6b2-3678fe652446",
+    "merchant": "Arcade Zone",
+    "amount": 32.88,
+    "category": "Fun",
+    "date": "2026-05-04",
+    "notes": "Refill"
+  },
+  {
+    "id": "90b837d2-7182-49e7-8dac-6f0a7c248837",
+    "merchant": "Netflix",
+    "amount": 43.27,
+    "category": "Data",
+    "date": "2026-04-28",
+    "notes": ""
+  },
+  {
+    "id": "14eebe73-a315-4113-84a8-e3ecdbe74e09",
+    "merchant": "Toll Road",
+    "amount": 7.68,
+    "category": "Transport",
+    "date": "2026-05-18",
+    "notes": ""
+  },
+  {
+    "id": "2eb0a454-c1e6-4673-af9e-a21eec2213bd",
+    "merchant": "BP Gas",
+    "amount": 4.94,
+    "category": "Transport",
+    "date": "2026-05-08",
+    "notes": "Office supplies"
+  },
+  {
+    "id": "279af937-1dff-4201-9260-f175ea84b875",
+    "merchant": "Internet Provider",
+    "amount": 93.13,
+    "category": "Data",
+    "date": "2026-05-06",
+    "notes": ""
+  },
+  {
+    "id": "6e47f690-2673-49cd-a17a-f2422dd3e0a4",
+    "merchant": "Arcade Zone",
+    "amount": 58.27,
+    "category": "Fun",
+    "date": "2026-05-12",
+    "notes": "Quick lunch"
+  },
+  {
+    "id": "4245ad67-d9eb-4c35-bdd1-91444080e5dc",
+    "merchant": "Internet Provider",
+    "amount": 40.64,
+    "category": "Data",
+    "date": "2026-05-08",
+    "notes": "Monthly sub"
+  },
+  {
+    "id": "1796d267-0c0b-4bbb-9ae6-9b5edc66baa3",
+    "merchant": "Chipotle",
+    "amount": 9.6,
+    "category": "Food",
+    "date": "2026-05-08",
+    "notes": "Date night"
+  },
+  {
+    "id": "55554249-95dc-4685-88ae-8420e77f0188",
+    "merchant": "Taco Stand",
+    "amount": 8.08,
+    "category": "Food",
+    "date": "2026-05-20",
+    "notes": "Office supplies"
+  },
+  {
+    "id": "afeadae5-b752-4b88-aefd-e690df5c9272",
+    "merchant": "Internet Provider",
+    "amount": 71,
+    "category": "Data",
+    "date": "2026-05-15",
+    "notes": ""
+  },
+  {
+    "id": "8b3b919f-ff76-4adf-9298-b08b4ec93461",
+    "merchant": "Parking Meter",
+    "amount": 40.97,
+    "category": "Transport",
+    "date": "2026-05-12",
+    "notes": "Weekly groceries"
+  },
+  {
+    "id": "f1931efd-da0a-4c20-b124-4b870c30fcfe",
+    "merchant": "Museum Entry",
+    "amount": 80.76,
+    "category": "Fun",
+    "date": "2026-05-10",
+    "notes": "Birthday gift"
+  },
+  {
+    "id": "6fcf1265-08b2-473e-b8a3-e447deef4d51",
+    "merchant": "Bowling Alley",
+    "amount": 108.01,
+    "category": "Fun",
+    "date": "2026-05-16",
+    "notes": ""
+  },
+  {
+    "id": "59b5d8cc-2df3-47eb-bc52-f775363735ef",
+    "merchant": "Parking Meter",
+    "amount": 41.9,
+    "category": "Transport",
+    "date": "2026-05-12",
+    "notes": "Quick lunch"
+  },
+  {
+    "id": "3804630d-7855-4991-aa30-7e8d8b6de189",
+    "merchant": "Lyft",
+    "amount": 19.07,
+    "category": "Transport",
+    "date": "2026-05-08",
+    "notes": ""
+  },
+  {
+    "id": "f53fac38-4f07-4dc4-aeaa-e5a18cb2f7db",
+    "merchant": "McDonald's",
+    "amount": 51.62,
+    "category": "Food",
+    "date": "2026-05-19",
+    "notes": ""
+  },
+  {
+    "id": "3092931c-ff44-4796-9070-add956f5cf18",
+    "merchant": "Internet Provider",
+    "amount": 28.84,
+    "category": "Data",
+    "date": "2026-05-07",
+    "notes": "Refill"
+  },
+  {
+    "id": "4e1b4c81-62da-4ca3-bcb4-05f8c53b86c8",
+    "merchant": "Comedy Club",
+    "amount": 100.6,
+    "category": "Fun",
+    "date": "2026-04-24",
+    "notes": "Monthly sub"
+  },
+  {
+    "id": "a4ec71eb-7d68-4cf7-b5d9-75f22b0ec64e",
+    "merchant": "Lyft",
+    "amount": 23.63,
+    "category": "Transport",
+    "date": "2026-04-27",
+    "notes": ""
+  },
+  {
+    "id": "56ddaeef-aa25-459b-89b4-67f892a9c7a8",
+    "merchant": "Toll Road",
+    "amount": 20.42,
+    "category": "Transport",
+    "date": "2026-05-01",
+    "notes": "Office supplies"
+  },
+  {
+    "id": "5a37bb9b-fb53-471c-bbb1-fdde6f39d1e8",
+    "merchant": "Local Diner",
+    "amount": 43.25,
+    "category": "Food",
+    "date": "2026-05-18",
+    "notes": "Birthday gift"
+  },
+  {
+    "id": "bbc8738d-c487-41bc-b35a-2078222ef2cc",
+    "merchant": "Laundry Mat",
+    "amount": 7.89,
+    "category": "Other",
+    "date": "2026-05-08",
+    "notes": "Monthly sub"
+  },
+  {
+    "id": "19f368a3-b2ba-47ec-bd39-9c293511327e",
+    "merchant": "Subway",
+    "amount": 38.48,
+    "category": "Food",
+    "date": "2026-05-20",
+    "notes": "Refill"
+  },
+  {
+    "id": "7ec23d6e-216f-4cab-b526-f03c4d422532",
+    "merchant": "Shell Gas",
+    "amount": 30.16,
+    "category": "Transport",
+    "date": "2026-05-19",
+    "notes": "Date night"
+  },
+  {
+    "id": "afb82bfe-15bf-4e26-b6f5-417b5a317b31",
+    "merchant": "Toll Road",
+    "amount": 31.44,
+    "category": "Transport",
+    "date": "2026-05-16",
+    "notes": "Birthday gift"
+  },
+  {
+    "id": "8c257d56-1c5d-4a1c-899a-9c831a820e58",
+    "merchant": "Deli Counter",
+    "amount": 33.68,
+    "category": "Food",
+    "date": "2026-05-08",
+    "notes": "Weekly groceries"
+  },
+  {
+    "id": "f5057d74-c05e-4e43-b966-b077d3ee72e9",
+    "merchant": "Spotify",
+    "amount": 11.51,
+    "category": "Data",
+    "date": "2026-05-22",
+    "notes": ""
+  },
+  {
+    "id": "3dd8d5c9-0e16-4d84-9269-a0942216f7d7",
+    "merchant": "Zoo Admission",
+    "amount": 54.04,
+    "category": "Fun",
+    "date": "2026-05-09",
+    "notes": ""
+  },
+  {
+    "id": "32e6731e-31b5-405e-b98c-27d7d30c703d",
+    "merchant": "McDonald's",
+    "amount": 16,
+    "category": "Food",
+    "date": "2026-05-07",
+    "notes": ""
+  },
+  {
+    "id": "6ed00a31-344d-45f8-8477-7a03ab5c9fa6",
+    "merchant": "Amtrak",
+    "amount": 39.22,
+    "category": "Transport",
+    "date": "2026-05-02",
+    "notes": "Date night"
+  },
+  {
+    "id": "74e669e7-fa11-4ed4-a774-d05528ab6a90",
+    "merchant": "Adobe CC",
+    "amount": 79.7,
+    "category": "Data",
+    "date": "2026-05-22",
+    "notes": "Date night"
+  },
+  {
+    "id": "a7e4dedf-91b1-407b-b5d6-0caced8262fb",
+    "merchant": "Pharmacy",
+    "amount": 194.91,
+    "category": "Other",
+    "date": "2026-04-28",
+    "notes": "Office supplies"
+  },
+  {
+    "id": "3ef2503f-9e94-427b-a4f2-c6810b23e07e",
+    "merchant": "Comedy Club",
+    "amount": 64.34,
+    "category": "Fun",
+    "date": "2026-05-15",
+    "notes": ""
+  },
+  {
+    "id": "206d5b56-4376-4adc-b85c-9b8e524d23d8",
+    "merchant": "Chipotle",
+    "amount": 11.22,
+    "category": "Food",
+    "date": "2026-05-09",
+    "notes": "Monthly sub"
+  },
+  {
+    "id": "6fd0c307-92c0-48a0-842c-f6f68cd626be",
+    "merchant": "McDonald's",
+    "amount": 37.86,
+    "category": "Food",
+    "date": "2026-04-26",
+    "notes": "Quick lunch"
+  },
+  {
+    "id": "a5b9e5cc-a5d8-482d-95b3-c68e177f10f9",
+    "merchant": "Pasta House",
+    "amount": 32.98,
+    "category": "Food",
+    "date": "2026-05-15",
+    "notes": "Refill"
+  },
+  {
+    "id": "5817f0fe-1104-4dc3-8cfe-136aeddf1eda",
+    "merchant": "Zoo Admission",
+    "amount": 55.82,
+    "category": "Fun",
+    "date": "2026-05-03",
+    "notes": "Birthday gift"
+  },
+  {
+    "id": "679586f0-57cf-4ebe-ad83-a905181abae0",
+    "merchant": "BP Gas",
+    "amount": 11.37,
+    "category": "Transport",
+    "date": "2026-05-12",
+    "notes": ""
+  },
+  {
+    "id": "afa2d3fa-8196-47ea-9628-3b6d4d4ce60e",
+    "merchant": "GitHub Sponsors",
+    "amount": 24.78,
+    "category": "Data",
+    "date": "2026-05-01",
+    "notes": ""
+  },
+  {
+    "id": "994c0dd7-0781-4787-b669-718dcc6c65d7",
+    "merchant": "Movie Theater",
+    "amount": 54.27,
+    "category": "Fun",
+    "date": "2026-05-05",
+    "notes": "Weekly groceries"
+  },
+  {
+    "id": "a1986a89-648c-4678-ad15-a47afcdd18e2",
+    "merchant": "Whole Foods",
+    "amount": 22.67,
+    "category": "Food",
+    "date": "2026-04-23",
+    "notes": ""
+  }
+]
