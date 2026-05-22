@@ -99,7 +99,6 @@ export function parseAmount(input: string, currencyCode: string = "USD"): number
   if (!s) return 0
 
   const dec = decimalSepForCurrency(currencyCode)
-  const thou = dec === "." ? "," : "."
 
   if (dec === ",") {
     s = s.replace(/\./g, "").replace(",", ".")
