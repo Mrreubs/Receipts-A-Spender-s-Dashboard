@@ -90,14 +90,14 @@ export default function App() {
         </header>
 
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div id="dashboard" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total)} sub={visible.length ? `${visible.length} receipts` : undefined} />
             <StatCard icon={ReceiptText} label="Receipts" value={`${visible.length}`} sub={visible.length ? `Avg ${formatCurrency(total / visible.length)}` : undefined} />
             <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${CATEGORIES.length}`} />
             <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt) : "—"} sub={topMerchant} />
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+          <div id="receipts" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
                 <ArrowUpRight className="w-4 h-4 text-white" />
@@ -107,7 +107,7 @@ export default function App() {
             <ReceiptForm onAdd={addReceipt} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div id="analytics" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
@@ -128,7 +128,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+          <div id="settings" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
             <ReceiptList
               receipts={visible}
               onDelete={deleteReceipt}
