@@ -4,31 +4,27 @@ interface LogoProps {
 }
 
 export default function Logo({ size = 32, showText = false }: LogoProps) {
-  const s = size
   return (
     <div className="flex items-center gap-3">
-      <svg width={s} height={s} viewBox="0 0 48 48" className="shrink-0">
+      <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0">
         <defs>
-          <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="logoG" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#8b5cf6" />
             <stop offset="100%" stopColor="#4f46e5" />
           </linearGradient>
         </defs>
-        <rect width={s} height={s} rx={s >= 48 ? 12 : s * 0.25} fill="url(#logoGrad)" />
+        <rect width={48} height={48} rx={12} fill="url(#logoG)" />
         <path
-          stroke="#fff" strokeWidth={s / 16} strokeLinecap="round" strokeLinejoin="round" fill="none"
-          d="M14 14h20v22l-4-3-4 3-4-3-4 3-4-3V14z"
-          transform={`scale(${s / 48})`}
+          d="M16 13h12l6 7v16a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2V15a2 2 0 0 1 2-2z"
+          fill="none" stroke="#fff" strokeWidth={2.2} strokeLinejoin="round"
         />
         <path
-          stroke="#fff" strokeWidth={s / 20} strokeLinecap="round" fill="none"
-          d="M18 20h12v0M18 24h12v0M18 28h8v0"
-          transform={`scale(${s / 48})`}
+          d="M28 13v7h7"
+          fill="none" stroke="#fff" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"
         />
         <path
-          stroke="#fff" strokeWidth={s / 16} strokeLinecap="round" fill="none"
-          d="M30 14v4"
-          transform={`scale(${s / 48})`}
+          d="M19 24h10M19 29h7"
+          fill="none" stroke="#fff" strokeWidth={2} strokeLinecap="round" opacity={0.7}
         />
       </svg>
       {showText && (
