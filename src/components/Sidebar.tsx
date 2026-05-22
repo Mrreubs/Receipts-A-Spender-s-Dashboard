@@ -5,7 +5,7 @@ import {
 } from "lucide-react"
 import type { Receipt, WeekFilter } from "../types"
 import type { View } from "../App"
-import { CATEGORIES } from "../types"
+import { DEFAULT_CATEGORIES } from "../types"
 import { formatCurrency } from "../utils"
 
 const NAV: { label: string; icon: typeof LayoutDashboard; view: View }[] = [
@@ -27,9 +27,11 @@ interface SidebarProps {
   onFilterChange: (f: WeekFilter) => void
   view: View
   onViewChange: (v: View) => void
+  currency?: string
+  totalCategories?: number
 }
 
-export default function Sidebar({ receipts, filter, onFilterChange, view, onViewChange }: SidebarProps) {
+export default function Sidebar({ receipts, filter, onFilterChange, view, onViewChange, currency, totalCategories }: SidebarProps) {
   const [open, setOpen] = useState(false)
 
   const total = useMemo(() => receipts.reduce((s, r) => s + r.amount, 0), [receipts])
@@ -119,7 +121,7 @@ export default function Sidebar({ receipts, filter, onFilterChange, view, onView
         <div className="px-4 py-4 border-t border-gray-100 space-y-3 shrink-0">
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Total spent</span>
-            <span className="font-semibold text-gray-800">{formatCurrency(total)}</span>
+            <span className="font-semibold text-gray-800">{formatCurrency(total, currency)}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Receipts</span>
@@ -127,11 +129,11 @@ export default function Sidebar({ receipts, filter, onFilterChange, view, onView
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Categories</span>
-            <span className="font-semibold text-gray-800">{categoriesUsed} / {CATEGORIES.length}</span>
+            <span className="font-semibold text-gray-800">{categoriesUsed} / {totalCategories ?? DEFAULT_CATEGORIES.length}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Average</span>
-            <span className="font-semibold text-gray-800">{avg > 0 ? formatCurrency(avg) : "—"}</span>
+            <span className="font-semibold text-gray-800">{avg > 0 ? formatCurrency(avg, currency) : "—"}</span>
           </div>
         </div>
       </aside>

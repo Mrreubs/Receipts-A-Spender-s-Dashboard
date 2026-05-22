@@ -7,9 +7,10 @@ import { get7DayWindow, formatCurrency } from "../utils"
 interface DailyChartProps {
   receipts: Receipt[]
   filter: WeekFilter
+  currency?: string
 }
 
-export default function DailyChart({ receipts, filter }: DailyChartProps) {
+export default function DailyChart({ receipts, filter, currency }: DailyChartProps) {
   const days = get7DayWindow(filter)
 
   const data = useMemo(() => {
@@ -53,11 +54,11 @@ export default function DailyChart({ receipts, filter }: DailyChartProps) {
           tick={{ fontSize: 10, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(v) => formatCurrency(v).replace(/\.\d{2}$/, "")}
+          tickFormatter={(v) => formatCurrency(v, currency).replace(/\.\d{2}$/, "")}
           width={48}
         />
         <Tooltip
-          formatter={(value) => [formatCurrency(Number(value)), "Spent"]}
+          formatter={(value) => [formatCurrency(Number(value), currency), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",

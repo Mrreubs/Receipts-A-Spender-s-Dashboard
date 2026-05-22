@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from "react"
-import type { Receipt, WeekFilter } from "./types"
-import { CATEGORIES } from "./types"
+import type { Receipt, WeekFilter, AppSettings } from "./types"
+import { DEFAULT_SETTINGS } from "./types"
 import { useLocalStorage } from "./hooks/useLocalStorage"
-import { filterReceipts, formatCurrency, normalizeReceipts } from "./utils"
+import { filterReceipts, formatCurrency, normalizeCategory, normalizeReceipts, getMergedCategories } from "./utils"
 import ReceiptForm from "./components/ReceiptForm"
 import ReceiptList from "./components/ReceiptList"
 import SpendingChart from "./components/SpendingChart"
 import DailyChart from "./components/DailyChart"
 import Sidebar from "./components/Sidebar"
+import SettingsPanel from "./components/SettingsPanel"
 import ToastContainer, { toast } from "./components/ToastContainer"
 import { Wallet, ReceiptText, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
 
@@ -37,14 +38,15 @@ export type View = "dashboard" | "receipts" | "analytics" | "settings"
 
 export default function App() {
   const [rawReceipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [], toast)
+  const [settings, setSettings] = useLocalStorage<AppSettings>("settings", DEFAULT_SETTINGS, toast)
   const [filter, setFilter] = useState<WeekFilter>("this-week")
   const [view, setView] = useState<View>("dashboard")
 
-  const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts))
+  const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts, settings))
 
   useEffect(() => {
-    setNormalized(normalizeReceipts(rawReceipts))
-  }, [rawReceipts])
+    setNormalized(normalizeReceipts(rawReceipts, settings))
+  }, [rawReceipts, settings])
 
   const addReceipt = useCallback(
     (r: Receipt) => setReceipts((prev) => [...prev, r]),
@@ -56,6 +58,12 @@ export default function App() {
     [setReceipts],
   )
 
+  const importReceipts = useCallback(
+    (data: Receipt[]) => setReceipts(data.map((r) => ({ ...r, category: normalizeCategory(r.category, settings) }))),
+    [setReceipts, settings],
+  )
+
+  const allCategories = getMergedCategories(settings)
   const visible = filterReceipts(receipts, filter)
   const total = view === "receipts"
     ? receipts.reduce((s, r) => s + r.amount, 0)
@@ -70,7 +78,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/40 flex">
-      <Sidebar receipts={displayed} filter={filter} onFilterChange={setFilter} view={view} onViewChange={setView} />
+      <Sidebar receipts={displayed} filter={filter} onFilterChange={setFilter} view={view} onViewChange={setView} currency={settings.currency} totalCategories={allCategories.length} />
 
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100 lg:pl-0">
@@ -93,7 +101,7 @@ export default function App() {
               )}
               <span className="hidden sm:inline text-sm text-gray-400">{displayed.length} receipt{displayed.length !== 1 ? "s" : ""}</span>
               <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:inline" />
-              <span className="font-semibold text-gray-700">{formatCurrency(total)}</span>
+              <span className="font-semibold text-gray-700">{formatCurrency(total, settings.currency)}</span>
             </div>
           </div>
         </header>
@@ -102,10 +110,10 @@ export default function App() {
           {view === "dashboard" && (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total)} sub={displayed.length ? `${displayed.length} receipts` : undefined} />
-                <StatCard icon={ReceiptText} label="Receipts" value={`${displayed.length}`} sub={displayed.length ? `Avg ${formatCurrency(total / displayed.length)}` : undefined} />
-                <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${CATEGORIES.length}`} />
-                <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt) : "—"} sub={topMerchant} />
+                <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total, settings.currency)} sub={displayed.length ? `${displayed.length} receipts` : undefined} />
+                <StatCard icon={ReceiptText} label="Receipts" value={`${displayed.length}`} sub={displayed.length ? `Avg ${formatCurrency(total / displayed.length, settings.currency)}` : undefined} />
+                <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${allCategories.length}`} />
+                <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt, settings.currency) : "—"} sub={topMerchant} />
               </div>
 
               <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
@@ -115,7 +123,7 @@ export default function App() {
                   </div>
                   <h2 className="text-sm font-semibold text-gray-700">New Receipt</h2>
                 </div>
-                <ReceiptForm onAdd={addReceipt} />
+                <ReceiptForm onAdd={addReceipt} categories={allCategories} />
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -126,7 +134,7 @@ export default function App() {
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700">By Category</h2>
                   </div>
-                  <SpendingChart receipts={displayed} />
+                  <SpendingChart receipts={displayed} currency={settings.currency} />
                 </div>
                 <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
@@ -135,7 +143,7 @@ export default function App() {
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700">Daily Spending</h2>
                   </div>
-                  <DailyChart receipts={displayed} filter={filter} />
+                  <DailyChart receipts={displayed} filter={filter} currency={settings.currency} />
                 </div>
               </div>
 
@@ -144,6 +152,7 @@ export default function App() {
                   receipts={displayed}
                   onDelete={deleteReceipt}
                   onClear={clearReceipts}
+                  currency={settings.currency}
                 />
               </div>
             </>
@@ -155,6 +164,7 @@ export default function App() {
                 receipts={receipts}
                 onDelete={deleteReceipt}
                 onClear={clearReceipts}
+                currency={settings.currency}
               />
             </div>
           )}
@@ -169,7 +179,7 @@ export default function App() {
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700">By Category</h2>
                   </div>
-                  <SpendingChart receipts={receipts} />
+                  <SpendingChart receipts={receipts} currency={settings.currency} />
                 </div>
                 <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
@@ -178,16 +188,20 @@ export default function App() {
                     </div>
                     <h2 className="text-sm font-semibold text-gray-700">Daily Spending</h2>
                   </div>
-                  <DailyChart receipts={receipts} filter="all-time" />
+                  <DailyChart receipts={receipts} filter="all-time" currency={settings.currency} />
                 </div>
               </div>
             </>
           )}
 
           {view === "settings" && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <p className="text-sm text-gray-400 text-center py-12">Settings coming soon.</p>
-            </div>
+            <SettingsPanel
+              settings={settings}
+              onSettingsChange={setSettings}
+              receipts={receipts}
+              onImport={importReceipts}
+              onClear={clearReceipts}
+            />
           )}
         </main>
       </div>

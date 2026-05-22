@@ -1,18 +1,20 @@
 import { useState } from "react"
 import type { Receipt } from "../types"
-import { CATEGORIES } from "../types"
+import { DEFAULT_CATEGORIES } from "../types"
 import { v4 as uuidv4 } from "uuid"
 import { parseAmount } from "../utils"
 import { Store, DollarSign, Tag, Calendar, FileText, Plus } from "lucide-react"
 
 interface ReceiptFormProps {
   onAdd: (receipt: Receipt) => void
+  categories?: string[]
 }
 
-export default function ReceiptForm({ onAdd }: ReceiptFormProps) {
+export default function ReceiptForm({ onAdd, categories }: ReceiptFormProps) {
+  const allCats = categories ?? [...DEFAULT_CATEGORIES]
   const [merchant, setMerchant] = useState("")
   const [amount, setAmount] = useState("")
-  const [category, setCategory] = useState<string>(CATEGORIES[0])
+  const [category, setCategory] = useState<string>(allCats[0])
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [notes, setNotes] = useState("")
 
@@ -30,7 +32,7 @@ export default function ReceiptForm({ onAdd }: ReceiptFormProps) {
     setMerchant("")
     setAmount("")
     setNotes("")
-    setCategory(CATEGORIES[0])
+    setCategory(allCats[0])
   }
 
   return (
@@ -66,7 +68,7 @@ export default function ReceiptForm({ onAdd }: ReceiptFormProps) {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full pl-9 pr-8 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 transition-all duration-150 appearance-none"
           >
-            {CATEGORIES.map((c) => (
+            {allCats.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>

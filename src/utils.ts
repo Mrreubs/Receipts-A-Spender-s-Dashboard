@@ -1,5 +1,5 @@
-import type { Receipt, WeekFilter } from "./types"
-import { CATEGORIES } from "./types"
+import type { Receipt, WeekFilter, AppSettings } from "./types"
+import { DEFAULT_CATEGORIES, CURRENCIES } from "./types"
 
 function getMonday(d: Date): Date {
   const date = new Date(d)
@@ -72,10 +72,11 @@ export function filterReceipts(receipts: Receipt[], filter: WeekFilter): Receipt
   return receipts.filter((r) => isInRange(r.date, bounds.start, bounds.end))
 }
 
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
+export function formatCurrency(amount: number, currencyCode?: string): string {
+  const currency = CURRENCIES.find((c) => c.code === (currencyCode ?? "USD")) ?? CURRENCIES[0]
+  return new Intl.NumberFormat(currency.locale, {
     style: "currency",
-    currency: "USD",
+    currency: currency.code,
   }).format(amount)
 }
 
@@ -85,10 +86,15 @@ export function parseAmount(input: string): number {
   return Number.isNaN(val) ? 0 : val
 }
 
-export function normalizeCategory(cat: string): string {
-  return CATEGORIES.includes(cat as typeof CATEGORIES[number]) ? cat : "Other"
+export function getMergedCategories(settings: AppSettings): string[] {
+  return [...DEFAULT_CATEGORIES, ...settings.customCategories]
 }
 
-export function normalizeReceipts(receipts: Receipt[]): Receipt[] {
-  return receipts.map((r) => ({ ...r, category: normalizeCategory(r.category) }))
+export function normalizeCategory(cat: string, settings: AppSettings): string {
+  const all = getMergedCategories(settings)
+  return all.includes(cat) ? cat : "Other"
+}
+
+export function normalizeReceipts(receipts: Receipt[], settings: AppSettings): Receipt[] {
+  return receipts.map((r) => ({ ...r, category: normalizeCategory(r.category, settings) }))
 }

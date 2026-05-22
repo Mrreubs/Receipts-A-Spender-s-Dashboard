@@ -7,9 +7,10 @@ interface ReceiptListProps {
   receipts: Receipt[]
   onDelete: (id: string) => void
   onClear: () => void
+  currency?: string
 }
 
-export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptListProps) {
+export default function ReceiptList({ receipts, onDelete, onClear, currency }: ReceiptListProps) {
   const sorted = useMemo(
     () => [...receipts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [receipts],
@@ -42,7 +43,7 @@ export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptList
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">{formatCurrency(total)}</span>
+          <span className="text-lg font-bold text-gray-900">{formatCurrency(total, currency)}</span>
           {receipts.length > 0 && (
             <button
               onClick={onClear}
@@ -78,7 +79,7 @@ export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptList
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">{formatCurrency(r.amount)}</p>
+                <p className="text-sm font-semibold text-gray-900">{formatCurrency(r.amount, currency)}</p>
                 <p className="text-[11px] text-gray-400">{r.date}</p>
               </div>
               <button

@@ -1,7 +1,6 @@
 import { useMemo } from "react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts"
 import type { Receipt } from "../types"
-import { CATEGORIES } from "../types"
 import { formatCurrency } from "../utils"
 import type { PieLabelRenderProps } from "recharts"
 
@@ -15,15 +14,17 @@ const COLORS: Record<string, string> = {
 
 interface SpendingChartProps {
   receipts: Receipt[]
+  currency?: string
 }
 
-export default function SpendingChart({ receipts }: SpendingChartProps) {
+export default function SpendingChart({ receipts, currency }: SpendingChartProps) {
   const data = useMemo(() => {
     const map = new Map<string, number>()
     for (const r of receipts) {
       map.set(r.category, (map.get(r.category) || 0) + r.amount)
     }
-    return CATEGORIES.map((c) => ({ name: c, value: map.get(c) || 0 })).filter((d) => d.value > 0)
+    const cats = [...new Set(receipts.map((r) => r.category))]
+    return cats.map((c) => ({ name: c, value: map.get(c) || 0 })).filter((d) => d.value > 0)
   }, [receipts])
 
   if (data.length === 0) {
@@ -63,7 +64,7 @@ export default function SpendingChart({ receipts }: SpendingChartProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value) => [formatCurrency(Number(value)), "Spent"]}
+          formatter={(value) => [formatCurrency(Number(value), currency), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",
