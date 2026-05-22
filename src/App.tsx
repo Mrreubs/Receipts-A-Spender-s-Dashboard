@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import type { Receipt, WeekFilter, AppSettings } from "./types"
 import { DEFAULT_SETTINGS } from "./types"
 import { useLocalStorage } from "./hooks/useLocalStorage"
-import { filterReceipts, formatCurrency, normalizeCategory, normalizeReceipts, getMergedCategories } from "./utils"
+import { filterReceipts, formatCurrency, normalizeReceipts, getMergedCategories } from "./utils"
 import ReceiptForm from "./components/ReceiptForm"
 import ReceiptList from "./components/ReceiptList"
 import SpendingChart from "./components/SpendingChart"
@@ -10,7 +10,7 @@ import DailyChart from "./components/DailyChart"
 import Sidebar from "./components/Sidebar"
 import SettingsPanel from "./components/SettingsPanel"
 import ToastContainer, { toast } from "./components/ToastContainer"
-import { Wallet, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
+import { Wallet, ReceiptText, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
 import Logo from "./components/Logo"
 
 function StatCard({ icon: Icon, label, value, sub }: {
@@ -60,8 +60,8 @@ export default function App() {
   )
 
   const importReceipts = useCallback(
-    (data: Receipt[]) => setReceipts(data.map((r) => ({ ...r, category: normalizeCategory(r.category, settings) }))),
-    [setReceipts, settings],
+    (data: Receipt[]) => setReceipts(data),
+    [setReceipts],
   )
 
   const allCategories = getMergedCategories(settings)
@@ -73,7 +73,7 @@ export default function App() {
   const categoriesUsed = new Set(displayed.map((r) => r.category)).size
   const maxReceipt = displayed.length ? Math.max(...displayed.map((r) => r.amount)) : 0
   const topMerchant = displayed.length
-    ? [...displayed].sort((a, b) => b.amount - a.amount)[0].merchant
+    ? displayed.reduce((max, r) => r.amount > max.amount ? r : max).merchant
     : "—"
   const showFilter = view !== "receipts"
 
@@ -118,7 +118,7 @@ export default function App() {
                   </div>
                   <h2 className="text-sm font-semibold text-gray-700">New Receipt</h2>
                 </div>
-                <ReceiptForm onAdd={addReceipt} categories={allCategories} />
+                <ReceiptForm onAdd={addReceipt} categories={allCategories} currency={settings.currency} />
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

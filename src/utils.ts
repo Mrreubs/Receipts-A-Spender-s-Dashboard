@@ -1,6 +1,10 @@
 import type { Receipt, WeekFilter, AppSettings } from "./types"
 import { DEFAULT_CATEGORIES, CURRENCIES } from "./types"
 
+function toLocalDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
 function getMonday(d: Date): Date {
   const date = new Date(d)
   const day = date.getDay()
@@ -43,10 +47,11 @@ export function isInRange(dateStr: string, start: Date, end: Date): boolean {
 
 export function getLast7Days(): string[] {
   const days: string[] = []
+  const now = new Date()
   for (let i = 6; i >= 0; i--) {
-    const d = new Date()
+    const d = new Date(now)
     d.setDate(d.getDate() - i)
-    days.push(d.toISOString().slice(0, 10))
+    days.push(toLocalDate(d))
   }
   return days
 }
@@ -62,7 +67,7 @@ export function get7DayWindow(filter: WeekFilter): string[] {
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday)
     d.setDate(d.getDate() + i)
-    days.push(d.toISOString().slice(0, 10))
+    days.push(toLocalDate(d))
   }
   return days
 }
@@ -80,9 +85,29 @@ export function formatCurrency(amount: number, currencyCode?: string): string {
   }).format(amount)
 }
 
-export function parseAmount(input: string): number {
-  const cleaned = input.replace(/[^0-9,.-]/g, "").replace(",", ".")
-  const val = parseFloat(cleaned)
+const CURRENCY_LOCALE_CACHE = new Map<string, string>()
+function decimalSepForCurrency(currencyCode: string): string {
+  if (CURRENCY_LOCALE_CACHE.has(currencyCode)) return CURRENCY_LOCALE_CACHE.get(currencyCode)!
+  const c = CURRENCIES.find((c) => c.code === currencyCode) ?? CURRENCIES[0]
+  const sep = (1.1).toLocaleString(c.locale).replace(/[\d\s]/g, "").trim().charAt(0) || "."
+  CURRENCY_LOCALE_CACHE.set(currencyCode, sep)
+  return sep
+}
+
+export function parseAmount(input: string, currencyCode: string = "USD"): number {
+  let s = input.replace(/[^0-9,.-]/g, "")
+  if (!s) return 0
+
+  const dec = decimalSepForCurrency(currencyCode)
+  const thou = dec === "." ? "," : "."
+
+  if (dec === ",") {
+    s = s.replace(/\./g, "").replace(",", ".")
+  } else {
+    s = s.replace(/,/g, "")
+  }
+
+  const val = parseFloat(s)
   return Number.isNaN(val) ? 0 : val
 }
 
@@ -97,4 +122,17 @@ export function normalizeCategory(cat: string, settings: AppSettings): string {
 
 export function normalizeReceipts(receipts: Receipt[], settings: AppSettings): Receipt[] {
   return receipts.map((r) => ({ ...r, category: normalizeCategory(r.category, settings) }))
+}
+
+export function validateReceipt(r: unknown): r is Receipt {
+  if (!r || typeof r !== "object") return false
+  const obj = r as Record<string, unknown>
+  return (
+    typeof obj.id === "string" &&
+    typeof obj.merchant === "string" &&
+    typeof obj.amount === "number" && !Number.isNaN(obj.amount) &&
+    typeof obj.category === "string" &&
+    typeof obj.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(obj.date) &&
+    typeof obj.notes === "string"
+  )
 }

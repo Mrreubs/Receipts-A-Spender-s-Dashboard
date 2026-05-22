@@ -8,23 +8,30 @@ import { Store, DollarSign, Tag, Calendar, FileText, Plus } from "lucide-react"
 interface ReceiptFormProps {
   onAdd: (receipt: Receipt) => void
   categories?: string[]
+  currency?: string
 }
 
-export default function ReceiptForm({ onAdd, categories }: ReceiptFormProps) {
+function todayLocal(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
+export default function ReceiptForm({ onAdd, categories, currency }: ReceiptFormProps) {
   const allCats = categories ?? [...DEFAULT_CATEGORIES]
   const [merchant, setMerchant] = useState("")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState<string>(allCats[0])
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [date, setDate] = useState(todayLocal())
   const [notes, setNotes] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!merchant || !amount || !date) return
+    const parsed = parseAmount(amount, currency)
+    if (!merchant || !amount || !date || parsed <= 0) return
     onAdd({
       id: uuidv4(),
       merchant,
-      amount: parseAmount(amount),
+      amount: parsed,
       category,
       date,
       notes,

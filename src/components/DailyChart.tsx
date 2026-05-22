@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import type { Receipt } from "../types"
 import type { WeekFilter } from "../types"
+import { CURRENCIES } from "../types"
 import { get7DayWindow, formatCurrency } from "../utils"
 
 interface DailyChartProps {
@@ -10,20 +11,25 @@ interface DailyChartProps {
   currency?: string
 }
 
-export default function DailyChart({ receipts, filter, currency }: DailyChartProps) {
-  const days = get7DayWindow(filter)
+function dateLocaleFor(currencyCode?: string): string {
+  if (!currencyCode) return "en-US"
+  return CURRENCIES.find((c) => c.code === currencyCode)?.locale ?? "en-US"
+}
 
+export default function DailyChart({ receipts, filter, currency }: DailyChartProps) {
   const data = useMemo(() => {
+    const days = get7DayWindow(filter)
     const map = new Map<string, number>()
     for (const r of receipts) {
       map.set(r.date, (map.get(r.date) || 0) + r.amount)
     }
+    const loc = dateLocaleFor(currency)
     return days.map((date) => ({
       date,
-      label: new Date(date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).replace(",", ""),
+      label: new Date(date).toLocaleDateString(loc, { weekday: "short", month: "short", day: "numeric" }).replace(",", ""),
       total: map.get(date) || 0,
     }))
-  }, [receipts, days])
+  }, [receipts, filter, currency])
 
   if (data.every((d) => d.total === 0)) {
     return (
@@ -58,7 +64,7 @@ export default function DailyChart({ receipts, filter, currency }: DailyChartPro
           width={48}
         />
         <Tooltip
-          formatter={(value) => [formatCurrency(Number(value), currency), "Spent"]}
+          formatter={(value) => [formatCurrency(value as number, currency), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",

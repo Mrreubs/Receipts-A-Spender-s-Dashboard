@@ -12,6 +12,14 @@ const COLORS: Record<string, string> = {
   Other: "#78716c",
 }
 
+const PALETTE = ["#14b8a6", "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#a855f7", "#eab308", "#0ea5e9"]
+
+function colorFor(name: string): string {
+  if (COLORS[name]) return COLORS[name]
+  const hash = [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  return PALETTE[hash % PALETTE.length]
+}
+
 interface SpendingChartProps {
   receipts: Receipt[]
   currency?: string
@@ -60,11 +68,11 @@ export default function SpendingChart({ receipts, currency }: SpendingChartProps
           labelLine={{ stroke: "#d1d5db", strokeWidth: 1 }}
         >
           {data.map((entry) => (
-            <Cell key={entry.name} fill={COLORS[entry.name] ?? "#78716c"} />
+            <Cell key={entry.name} fill={colorFor(entry.name)} />
           ))}
         </Pie>
         <Tooltip
-          formatter={(value) => [formatCurrency(Number(value), currency), "Spent"]}
+          formatter={(value) => [formatCurrency(value as number, currency), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",

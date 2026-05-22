@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import type { AppSettings, Receipt } from "../types"
-import { CURRENCIES } from "../types"
-import { formatCurrency, getMergedCategories } from "../utils"
+import { CURRENCIES, DEFAULT_CATEGORIES } from "../types"
+import { formatCurrency, getMergedCategories, validateReceipt } from "../utils"
 import { DollarSign, Plus, X, Download, Upload, Trash2, AlertTriangle } from "lucide-react"
 
 interface SettingsPanelProps {
@@ -51,10 +51,10 @@ export default function SettingsPanel({ settings, onSettingsChange, receipts, on
     reader.onload = (ev) => {
       try {
         const data = JSON.parse(ev.target?.result as string)
-        if (!Array.isArray(data)) throw new Error("Not an array")
+        if (!Array.isArray(data) || !data.every(validateReceipt)) throw new Error("Invalid")
         onImport(data as Receipt[])
       } catch {
-        alert("Invalid file format. Please upload a JSON file exported from this app.")
+        alert("Invalid file format. Please upload a valid JSON file exported from this app.")
       }
     }
     reader.readAsText(file)
@@ -96,7 +96,7 @@ export default function SettingsPanel({ settings, onSettingsChange, receipts, on
 
         <div className="flex flex-wrap gap-2 mb-4">
           {allCategories.map((cat) => {
-            const isDefault = ["Food", "Transport", "Data", "Fun", "Other"].includes(cat)
+            const isDefault = DEFAULT_CATEGORIES.includes(cat as typeof DEFAULT_CATEGORIES[number])
             return (
               <span
                 key={cat}
