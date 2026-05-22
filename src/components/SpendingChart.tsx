@@ -4,10 +4,13 @@ import type { Receipt } from "../types"
 import { CATEGORIES } from "../types"
 import type { PieLabelRenderProps } from "recharts"
 
-const COLORS = [
-  "#6366f1", "#f43f5e", "#10b981", "#f59e0b",
-  "#8b5cf6", "#ec4899", "#06b6d4", "#78716c",
-]
+const COLORS: Record<string, string> = {
+  Food: "#f43f5e",
+  Transport: "#3b82f6",
+  Data: "#8b5cf6",
+  Fun: "#f59e0b",
+  Other: "#78716c",
+}
 
 interface SpendingChartProps {
   receipts: Receipt[]
@@ -54,8 +57,8 @@ export default function SpendingChart({ receipts }: SpendingChartProps) {
           label={renderLabel}
           labelLine={{ stroke: "#d1d5db", strokeWidth: 1 }}
         >
-          {data.map((_, i) => (
-            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+          {data.map((entry) => (
+            <Cell key={entry.name} fill={COLORS[entry.name] ?? "#78716c"} />
           ))}
         </Pie>
         <Tooltip

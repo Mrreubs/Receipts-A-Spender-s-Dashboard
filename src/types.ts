@@ -8,12 +8,11 @@ export interface Receipt {
 }
 
 export const CATEGORIES = [
-  "Food & Dining",
-  "Transportation",
-  "Shopping",
-  "Entertainment",
-  "Utilities",
-  "Housing",
-  "Health",
+  "Food",
+  "Transport",
+  "Data",
+  "Fun",
   "Other",
 ] as const
+
+export type WeekFilter = "this-week" | "last-week" | "all-time"
