@@ -7,6 +7,7 @@ import type { Receipt, WeekFilter } from "../types"
 import type { View } from "../App"
 import { DEFAULT_CATEGORIES } from "../types"
 import { formatCurrency } from "../utils"
+import Logo from "./Logo"
 
 const NAV: { label: string; icon: typeof LayoutDashboard; view: View }[] = [
   { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" as const },
@@ -61,15 +62,7 @@ export default function Sidebar({ receipts, filter, onFilterChange, view, onView
           lg:translate-x-0 lg:sticky lg:top-0 lg:z-0`}
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-sm">
-              <ReceiptText className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">Receipts</p>
-              <p className="text-[10px] text-gray-400 leading-tight">Spender's Dashboard</p>
-            </div>
-          </div>
+          <Logo size={32} showText />
           <button
             onClick={() => setOpen(false)}
             className="lg:hidden w-7 h-7 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"

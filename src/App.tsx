@@ -10,7 +10,8 @@ import DailyChart from "./components/DailyChart"
 import Sidebar from "./components/Sidebar"
 import SettingsPanel from "./components/SettingsPanel"
 import ToastContainer, { toast } from "./components/ToastContainer"
-import { Wallet, ReceiptText, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
+import { Wallet, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
+import Logo from "./components/Logo"
 
 function StatCard({ icon: Icon, label, value, sub }: {
   icon: typeof Wallet
@@ -83,14 +84,8 @@ export default function App() {
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100 lg:pl-0">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between lg:justify-end">
-            <div className="flex items-center gap-3 lg:hidden">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                <ReceiptText className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-gray-900 leading-tight">Receipts</p>
-                <p className="text-[10px] text-gray-400 leading-tight">Spender's Dashboard</p>
-              </div>
+            <div className="lg:hidden">
+              <Logo size={32} showText />
             </div>
             <div className="flex items-center gap-3 ml-auto">
               {showFilter && (
