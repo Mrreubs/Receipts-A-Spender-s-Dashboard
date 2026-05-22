@@ -41,7 +41,7 @@ export default function App() {
   const [rawReceipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [], toast)
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", DEFAULT_SETTINGS, toast)
   const [filter, setFilter] = useState<WeekFilter>("this-week")
-  const [view, setView] = useState<View>("dashboard")
+  const [view, setView] = useLocalStorage<View>("view", "dashboard", toast)
 
   const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts, settings))
 
