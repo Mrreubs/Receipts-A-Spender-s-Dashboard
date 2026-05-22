@@ -41,7 +41,16 @@ export default function App() {
   const [rawReceipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [], toast)
   const [settings, setSettings] = useLocalStorage<AppSettings>("settings", DEFAULT_SETTINGS, toast)
   const [filter, setFilter] = useState<WeekFilter>("this-week")
-  const [view, setView] = useLocalStorage<View>("view", "dashboard", toast)
+  const [view, setView] = useState<View>(() => {
+    try {
+      const v = localStorage.getItem("view")
+      if (v === '"dashboard"' || v === '"receipts"' || v === '"analytics"' || v === '"settings"') return JSON.parse(v)
+    } catch { /* ignore */ }
+    return "dashboard"
+  })
+  useEffect(() => {
+    try { localStorage.setItem("view", JSON.stringify(view)) } catch { /* ignore */ }
+  }, [view])
 
   const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts, settings))
 
