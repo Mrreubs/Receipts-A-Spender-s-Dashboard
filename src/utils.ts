@@ -1,4 +1,5 @@
 import type { Receipt, WeekFilter } from "./types"
+import { CATEGORIES } from "./types"
 
 function getMonday(d: Date): Date {
   const date = new Date(d)
@@ -69,4 +70,25 @@ export function get7DayWindow(filter: WeekFilter): string[] {
 export function filterReceipts(receipts: Receipt[], filter: WeekFilter): Receipt[] {
   const bounds = getFilterBounds(filter)
   return receipts.filter((r) => isInRange(r.date, bounds.start, bounds.end))
+}
+
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount)
+}
+
+export function parseAmount(input: string): number {
+  const cleaned = input.replace(/[^0-9,.-]/g, "").replace(",", ".")
+  const val = parseFloat(cleaned)
+  return Number.isNaN(val) ? 0 : val
+}
+
+export function normalizeCategory(cat: string): string {
+  return CATEGORIES.includes(cat as typeof CATEGORIES[number]) ? cat : "Other"
+}
+
+export function normalizeReceipts(receipts: Receipt[]): Receipt[] {
+  return receipts.map((r) => ({ ...r, category: normalizeCategory(r.category) }))
 }

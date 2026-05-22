@@ -1,13 +1,14 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { Receipt, WeekFilter } from "./types"
 import { CATEGORIES } from "./types"
 import { useLocalStorage } from "./hooks/useLocalStorage"
-import { filterReceipts } from "./utils"
+import { filterReceipts, formatCurrency, normalizeReceipts } from "./utils"
 import ReceiptForm from "./components/ReceiptForm"
 import ReceiptList from "./components/ReceiptList"
 import SpendingChart from "./components/SpendingChart"
 import DailyChart from "./components/DailyChart"
 import Sidebar from "./components/Sidebar"
+import ToastContainer, { toast } from "./components/ToastContainer"
 import { Wallet, ReceiptText, TrendingUp, Tags, ArrowUpRight, CalendarDays } from "lucide-react"
 
 function StatCard({ icon: Icon, label, value, sub }: {
@@ -33,8 +34,14 @@ function StatCard({ icon: Icon, label, value, sub }: {
 }
 
 export default function App() {
-  const [receipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [])
+  const [rawReceipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [], toast)
   const [filter, setFilter] = useState<WeekFilter>("this-week")
+
+  const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts))
+
+  useEffect(() => {
+    setNormalized(normalizeReceipts(rawReceipts))
+  }, [rawReceipts])
 
   const addReceipt = useCallback(
     (r: Receipt) => setReceipts((prev) => [...prev, r]),
@@ -77,17 +84,17 @@ export default function App() {
               </div>
               <span className="hidden sm:inline text-sm text-gray-400">{visible.length} receipt{visible.length !== 1 ? "s" : ""}</span>
               <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:inline" />
-              <span className="font-semibold text-gray-700">${total.toFixed(2)}</span>
+              <span className="font-semibold text-gray-700">{formatCurrency(total)}</span>
             </div>
           </div>
         </header>
 
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard icon={Wallet} label="Total Spent" value={`$${total.toFixed(2)}`} sub={visible.length ? `${visible.length} receipts` : undefined} />
-            <StatCard icon={ReceiptText} label="Receipts" value={`${visible.length}`} sub={visible.length ? `Avg $${(total / visible.length).toFixed(2)}` : undefined} />
+            <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total)} sub={visible.length ? `${visible.length} receipts` : undefined} />
+            <StatCard icon={ReceiptText} label="Receipts" value={`${visible.length}`} sub={visible.length ? `Avg ${formatCurrency(total / visible.length)}` : undefined} />
             <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${CATEGORIES.length}`} />
-            <StatCard icon={TrendingUp} label="Highest" value={`$${maxReceipt.toFixed(2)}`} sub={topMerchant} />
+            <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt) : "—"} sub={topMerchant} />
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
@@ -130,6 +137,8 @@ export default function App() {
           </div>
         </main>
       </div>
+
+      <ToastContainer />
     </div>
   )
 }

@@ -1,4 +1,6 @@
+import { useMemo } from "react"
 import type { Receipt } from "../types"
+import { formatCurrency } from "../utils"
 import { Trash2, Store, RotateCcw } from "lucide-react"
 
 interface ReceiptListProps {
@@ -8,6 +10,13 @@ interface ReceiptListProps {
 }
 
 export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptListProps) {
+  const sorted = useMemo(
+    () => [...receipts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    [receipts],
+  )
+
+  const total = useMemo(() => receipts.reduce((s, r) => s + r.amount, 0), [receipts])
+
   if (receipts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -19,10 +28,6 @@ export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptList
       </div>
     )
   }
-
-  const sorted = [...receipts].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  )
 
   return (
     <div>
@@ -37,7 +42,7 @@ export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptList
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-gray-900">${receipts.reduce((s, r) => s + r.amount, 0).toFixed(2)}</span>
+          <span className="text-lg font-bold text-gray-900">{formatCurrency(total)}</span>
           {receipts.length > 0 && (
             <button
               onClick={onClear}
@@ -73,7 +78,7 @@ export default function ReceiptList({ receipts, onDelete, onClear }: ReceiptList
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">${r.amount.toFixed(2)}</p>
+                <p className="text-sm font-semibold text-gray-900">{formatCurrency(r.amount)}</p>
                 <p className="text-[11px] text-gray-400">{r.date}</p>
               </div>
               <button

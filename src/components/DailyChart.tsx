@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import type { Receipt } from "../types"
 import type { WeekFilter } from "../types"
-import { get7DayWindow } from "../utils"
+import { get7DayWindow, formatCurrency } from "../utils"
 
 interface DailyChartProps {
   receipts: Receipt[]
@@ -53,11 +53,11 @@ export default function DailyChart({ receipts, filter }: DailyChartProps) {
           tick={{ fontSize: 10, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(v) => `$${v}`}
-          width={40}
+          tickFormatter={(v) => formatCurrency(v).replace(/\.\d{2}$/, "")}
+          width={48}
         />
         <Tooltip
-          formatter={(value) => [`$${Number(value).toFixed(2)}`, "Spent"]}
+          formatter={(value) => [formatCurrency(Number(value)), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",

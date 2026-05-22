@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts"
 import type { Receipt } from "../types"
 import { CATEGORIES } from "../types"
+import { formatCurrency } from "../utils"
 import type { PieLabelRenderProps } from "recharts"
 
 const COLORS: Record<string, string> = {
@@ -62,7 +63,7 @@ export default function SpendingChart({ receipts }: SpendingChartProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value) => [`$${Number(value).toFixed(2)}`, "Spent"]}
+          formatter={(value) => [formatCurrency(Number(value)), "Spent"]}
           contentStyle={{
             borderRadius: "12px",
             border: "1px solid #e5e7eb",

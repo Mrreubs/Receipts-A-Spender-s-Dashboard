@@ -2,6 +2,7 @@ import { useState } from "react"
 import type { Receipt } from "../types"
 import { CATEGORIES } from "../types"
 import { v4 as uuidv4 } from "uuid"
+import { parseAmount } from "../utils"
 import { Store, DollarSign, Tag, Calendar, FileText, Plus } from "lucide-react"
 
 interface ReceiptFormProps {
@@ -21,7 +22,7 @@ export default function ReceiptForm({ onAdd }: ReceiptFormProps) {
     onAdd({
       id: uuidv4(),
       merchant,
-      amount: parseFloat(amount),
+      amount: parseAmount(amount),
       category,
       date,
       notes,
@@ -49,9 +50,8 @@ export default function ReceiptForm({ onAdd }: ReceiptFormProps) {
         <div className="relative">
           <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <input
-            type="number"
-            step="0.01"
-            min="0"
+            type="text"
+            inputMode="decimal"
             placeholder="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}

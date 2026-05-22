@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import {
   LayoutDashboard, ReceiptText, BarChart3, Settings,
   Menu, X, CalendarDays, ChevronLeft, Clock,
 } from "lucide-react"
 import type { Receipt, WeekFilter } from "../types"
 import { CATEGORIES } from "../types"
+import { formatCurrency } from "../utils"
 
 const NAV = [
   { label: "Dashboard", icon: LayoutDashboard, href: "#dashboard" },
@@ -28,8 +29,8 @@ interface SidebarProps {
 export default function Sidebar({ receipts, filter, onFilterChange }: SidebarProps) {
   const [open, setOpen] = useState(false)
 
-  const total = receipts.reduce((s, r) => s + r.amount, 0)
-  const categoriesUsed = new Set(receipts.map((r) => r.category)).size
+  const total = useMemo(() => receipts.reduce((s, r) => s + r.amount, 0), [receipts])
+  const categoriesUsed = useMemo(() => new Set(receipts.map((r) => r.category)).size, [receipts])
   const avg = receipts.length ? total / receipts.length : 0
 
   return (
@@ -109,7 +110,7 @@ export default function Sidebar({ receipts, filter, onFilterChange }: SidebarPro
         <div className="px-4 py-4 border-t border-gray-100 space-y-3 shrink-0">
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Total spent</span>
-            <span className="font-semibold text-gray-800">${total.toFixed(2)}</span>
+            <span className="font-semibold text-gray-800">{formatCurrency(total)}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Receipts</span>
@@ -121,7 +122,7 @@ export default function Sidebar({ receipts, filter, onFilterChange }: SidebarPro
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-400">Average</span>
-            <span className="font-semibold text-gray-800">${avg.toFixed(2)}</span>
+            <span className="font-semibold text-gray-800">{avg > 0 ? formatCurrency(avg) : "—"}</span>
           </div>
         </div>
       </aside>
