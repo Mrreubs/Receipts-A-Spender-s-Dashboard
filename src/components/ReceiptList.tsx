@@ -1,7 +1,8 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import type { Receipt } from "../types"
 import { formatCurrency } from "../utils"
 import { Trash2, Store, RotateCcw } from "lucide-react"
+import ReceiptDetailModal from "./ReceiptDetailModal"
 
 interface ReceiptListProps {
   receipts: Receipt[]
@@ -11,6 +12,8 @@ interface ReceiptListProps {
 }
 
 export default function ReceiptList({ receipts, onDelete, onClear, currency }: ReceiptListProps) {
+  const [selected, setSelected] = useState<Receipt | null>(null)
+
   const sorted = useMemo(
     () => [...receipts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [receipts],
@@ -60,7 +63,8 @@ export default function ReceiptList({ receipts, onDelete, onClear, currency }: R
         {sorted.map((r, i) => (
           <div
             key={r.id}
-            className="group flex items-center gap-3 bg-gray-50 hover:bg-gray-100/70 rounded-xl px-4 py-3 transition-all duration-150 animate-slide-up"
+            onClick={() => setSelected(r)}
+            className="group flex items-center gap-3 bg-gray-50 hover:bg-gray-100/70 rounded-xl px-4 py-3 transition-all duration-150 animate-slide-up cursor-pointer"
             style={{ animationDelay: `${i * 20}ms` }}
           >
             <div className="w-9 h-9 rounded-lg bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm">
@@ -83,7 +87,7 @@ export default function ReceiptList({ receipts, onDelete, onClear, currency }: R
                 <p className="text-[11px] text-gray-400">{r.date}</p>
               </div>
               <button
-                onClick={() => onDelete(r.id)}
+                onClick={(e) => { e.stopPropagation(); onDelete(r.id) }}
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
@@ -92,6 +96,14 @@ export default function ReceiptList({ receipts, onDelete, onClear, currency }: R
           </div>
         ))}
       </div>
+
+      {selected && (
+        <ReceiptDetailModal
+          receipt={selected}
+          currency={currency}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   )
 }
