@@ -4,14 +4,15 @@ import {
   Menu, X, CalendarDays, ChevronLeft, Clock,
 } from "lucide-react"
 import type { Receipt, WeekFilter } from "../types"
+import type { View } from "../App"
 import { CATEGORIES } from "../types"
 import { formatCurrency } from "../utils"
 
-const NAV = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "#dashboard" },
-  { label: "Receipts", icon: ReceiptText, href: "#receipts" },
-  { label: "Analytics", icon: BarChart3, href: "#analytics" },
-  { label: "Settings", icon: Settings, href: "#settings" },
+const NAV: { label: string; icon: typeof LayoutDashboard; view: View }[] = [
+  { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" as const },
+  { label: "Receipts", icon: ReceiptText, view: "receipts" as const },
+  { label: "Analytics", icon: BarChart3, view: "analytics" as const },
+  { label: "Settings", icon: Settings, view: "settings" as const },
 ]
 
 const FILTERS: { value: WeekFilter; label: string; icon: typeof CalendarDays }[] = [
@@ -24,9 +25,11 @@ interface SidebarProps {
   receipts: Receipt[]
   filter: WeekFilter
   onFilterChange: (f: WeekFilter) => void
+  view: View
+  onViewChange: (v: View) => void
 }
 
-export default function Sidebar({ receipts, filter, onFilterChange }: SidebarProps) {
+export default function Sidebar({ receipts, filter, onFilterChange, view, onViewChange }: SidebarProps) {
   const [open, setOpen] = useState(false)
 
   const total = useMemo(() => receipts.reduce((s, r) => s + r.amount, 0), [receipts])
@@ -74,17 +77,23 @@ export default function Sidebar({ receipts, filter, onFilterChange }: SidebarPro
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {NAV.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all duration-150"
-            >
-              <item.icon className="w-4 h-4" />
-              {item.label}
-            </a>
-          ))}
+          {NAV.map((item) => {
+            const active = view === item.view
+            return (
+              <button
+                key={item.label}
+                onClick={() => { onViewChange(item.view); setOpen(false) }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer ${
+                  active
+                    ? "bg-violet-50 text-violet-700"
+                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <item.icon className={`w-4 h-4 ${active ? "text-violet-600" : ""}`} />
+                {item.label}
+              </button>
+            )
+          })}
           <div className="pt-4">
             <p className="px-3 pb-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Period</p>
             {FILTERS.map((f) => {

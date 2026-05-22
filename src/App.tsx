@@ -33,9 +33,12 @@ function StatCard({ icon: Icon, label, value, sub }: {
   )
 }
 
+export type View = "dashboard" | "receipts" | "analytics" | "settings"
+
 export default function App() {
   const [rawReceipts, setReceipts, clearReceipts] = useLocalStorage<Receipt[]>("receipts", [], toast)
   const [filter, setFilter] = useState<WeekFilter>("this-week")
+  const [view, setView] = useState<View>("dashboard")
 
   const [receipts, setNormalized] = useState<Receipt[]>(() => normalizeReceipts(rawReceipts))
 
@@ -54,16 +57,20 @@ export default function App() {
   )
 
   const visible = filterReceipts(receipts, filter)
-  const total = visible.reduce((s, r) => s + r.amount, 0)
-  const categoriesUsed = new Set(visible.map((r) => r.category)).size
-  const maxReceipt = visible.length ? Math.max(...visible.map((r) => r.amount)) : 0
-  const topMerchant = visible.length
-    ? [...visible].sort((a, b) => b.amount - a.amount)[0].merchant
+  const total = view === "receipts"
+    ? receipts.reduce((s, r) => s + r.amount, 0)
+    : visible.reduce((s, r) => s + r.amount, 0)
+  const displayed = view === "receipts" ? receipts : visible
+  const categoriesUsed = new Set(displayed.map((r) => r.category)).size
+  const maxReceipt = displayed.length ? Math.max(...displayed.map((r) => r.amount)) : 0
+  const topMerchant = displayed.length
+    ? [...displayed].sort((a, b) => b.amount - a.amount)[0].merchant
     : "—"
+  const showFilter = view !== "receipts"
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50/40 flex">
-      <Sidebar receipts={visible} filter={filter} onFilterChange={setFilter} />
+      <Sidebar receipts={displayed} filter={filter} onFilterChange={setFilter} view={view} onViewChange={setView} />
 
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100 lg:pl-0">
@@ -78,11 +85,13 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center gap-3 ml-auto">
-              <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-100">
-                <CalendarDays className="w-3.5 h-3.5" />
-                <span className="capitalize">{filter.replace("-", " ")}</span>
-              </div>
-              <span className="hidden sm:inline text-sm text-gray-400">{visible.length} receipt{visible.length !== 1 ? "s" : ""}</span>
+              {showFilter && (
+                <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-100">
+                  <CalendarDays className="w-3.5 h-3.5" />
+                  <span className="capitalize">{filter.replace("-", " ")}</span>
+                </div>
+              )}
+              <span className="hidden sm:inline text-sm text-gray-400">{displayed.length} receipt{displayed.length !== 1 ? "s" : ""}</span>
               <span className="w-1 h-1 rounded-full bg-gray-300 hidden sm:inline" />
               <span className="font-semibold text-gray-700">{formatCurrency(total)}</span>
             </div>
@@ -90,51 +99,96 @@ export default function App() {
         </header>
 
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
-          <div id="dashboard" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total)} sub={visible.length ? `${visible.length} receipts` : undefined} />
-            <StatCard icon={ReceiptText} label="Receipts" value={`${visible.length}`} sub={visible.length ? `Avg ${formatCurrency(total / visible.length)}` : undefined} />
-            <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${CATEGORIES.length}`} />
-            <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt) : "—"} sub={topMerchant} />
-          </div>
-
-          <div id="receipts" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
-                <ArrowUpRight className="w-4 h-4 text-white" />
+          {view === "dashboard" && (
+            <>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard icon={Wallet} label="Total Spent" value={formatCurrency(total)} sub={displayed.length ? `${displayed.length} receipts` : undefined} />
+                <StatCard icon={ReceiptText} label="Receipts" value={`${displayed.length}`} sub={displayed.length ? `Avg ${formatCurrency(total / displayed.length)}` : undefined} />
+                <StatCard icon={Tags} label="Categories" value={`${categoriesUsed}`} sub={`of ${CATEGORIES.length}`} />
+                <StatCard icon={TrendingUp} label="Highest" value={maxReceipt > 0 ? formatCurrency(maxReceipt) : "—"} sub={topMerchant} />
               </div>
-              <h2 className="text-sm font-semibold text-gray-700">New Receipt</h2>
-            </div>
-            <ReceiptForm onAdd={addReceipt} />
-          </div>
 
-          <div id="analytics" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                  <Tags className="w-4 h-4 text-white" />
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
+                    <ArrowUpRight className="w-4 h-4 text-white" />
+                  </div>
+                  <h2 className="text-sm font-semibold text-gray-700">New Receipt</h2>
                 </div>
-                <h2 className="text-sm font-semibold text-gray-700">By Category</h2>
+                <ReceiptForm onAdd={addReceipt} />
               </div>
-              <SpendingChart receipts={visible} />
-            </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-white" />
-                </div>
-                <h2 className="text-sm font-semibold text-gray-700">Daily Spending</h2>
-              </div>
-              <DailyChart receipts={visible} filter={filter} />
-            </div>
-          </div>
 
-          <div id="settings" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-            <ReceiptList
-              receipts={visible}
-              onDelete={deleteReceipt}
-              onClear={clearReceipts}
-            />
-          </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                      <Tags className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-700">By Category</h2>
+                  </div>
+                  <SpendingChart receipts={displayed} />
+                </div>
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-700">Daily Spending</h2>
+                  </div>
+                  <DailyChart receipts={displayed} filter={filter} />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <ReceiptList
+                  receipts={displayed}
+                  onDelete={deleteReceipt}
+                  onClear={clearReceipts}
+                />
+              </div>
+            </>
+          )}
+
+          {view === "receipts" && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <ReceiptList
+                receipts={receipts}
+                onDelete={deleteReceipt}
+                onClear={clearReceipts}
+              />
+            </div>
+          )}
+
+          {view === "analytics" && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                      <Tags className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-700">By Category</h2>
+                  </div>
+                  <SpendingChart receipts={receipts} />
+                </div>
+                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-white" />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-700">Daily Spending</h2>
+                  </div>
+                  <DailyChart receipts={receipts} filter="all-time" />
+                </div>
+              </div>
+            </>
+          )}
+
+          {view === "settings" && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <p className="text-sm text-gray-400 text-center py-12">Settings coming soon.</p>
+            </div>
+          )}
         </main>
       </div>
 
